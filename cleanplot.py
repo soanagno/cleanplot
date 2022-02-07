@@ -56,7 +56,7 @@ def cleanplot(X, Y, n = 40, true_scale=True, aspect=1):
     else:
         ax.set_aspect(aspect)
 
-    tiny = 1e-3
+    tiny = np.abs(np.max(y)-np.min(y))*1e-3
     plt.xlim([np.min(x), np.max(x)])
     plt.ylim([np.min(y)-tiny, np.max(y)])
 
@@ -70,7 +70,6 @@ def cleanplot(X, Y, n = 40, true_scale=True, aspect=1):
     fig.savefig('figure.tiff', dpi=1200)
 
     plt.show()
-
 
 
 if __name__ == "__main__":

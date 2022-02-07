@@ -1,2 +1,2 @@
 # cleanplot
-A brief Python library for plotting clean figures with scientific publishing strandards, using matplotlib/seaborn.
+A clean Python template for plotting clean figures with scientific publishing strandards, using matplotlib/seaborn.

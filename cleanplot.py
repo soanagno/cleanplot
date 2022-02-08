@@ -5,75 +5,136 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
+
+class interface():
+
+    def __init__(self):
+
+        # Public
+        self.dpi = 1200
+        self.save_fig = True
+        self.saveas = 'figure.tiff'
+        self.title = 'cos(θ)'
+        self.xlabel = 'x axis'
+        self.ylabel = 'y axis'
+        self.font = 'sans-serif'
+        # self.cmaps = ['r', 'b']
+        self.cmaps = ['twilight_shifted_r', 'magma']
+        # self.cmaps = ['twilight_shifted_r', 'magma', 'inferno_r', 'twilight']
+
+
+    def setup(self, x, y, true_scale=True, aspect=None, domain=None):
         
-def cleanplot(X, Y, n = 40, true_scale=True, aspect=1):
-    
-    # plt.rc('lines', linewidth=2)
-    # plt.style.use('seaborn-notebook')
-    plt.rcParams['font.family'] = 'sans-serif'
+        # Plots size
+        n = x.shape[0]
 
-    x = np.zeros((n, X.size))
-    y = np.zeros((n, Y.size))
+        # Parameters
+        # plt.rc('lines', linewidth=2)
+        # plt.style.use('seaborn-notebook')
+        plt.rcParams['font.family'] = self.font
 
-    for i in range(n):
-        y[i] = Y
-        if i == 0:
-            x[i] = X
+        # Define colormap stack
+        mapstack = []
+        for i in range(len(self.cmaps)):
+            try:
+                mapstack.append(cm.get_cmap(self.cmaps[i], 128))
+            except:
+                continue
+
+        try:
+            newcolors = mapstack[0](np.linspace(0, 1, 128))
+            for i in range(1, len(self.cmaps)):
+                newcolors = np.vstack((newcolors, mapstack[i](np.linspace(0, 1, 128))))
+        except:
+                newcolors = self.cmaps
+
+        # Create custom map instance
+        customap = ListedColormap(newcolors, name='customap')
+        cmap = plt.get_cmap(customap)
+        colors = cmap(np.linspace(0, 1, n)) # get n colors from cmap
+
+        # Initialise figure
+        fig, ax = plt.subplots()
+        ax.set_prop_cycle(color=colors)     # set colors to cycle prop
+
+        # # Plot graphs
+        # for i in range(n):
+        #     plt.plot(x[i], y[i])
+
+        # Define domain dimensions
+        if domain == None:
+            xrange = [np.min(x), np.max(x)]
+            yrange = [np.min(y), np.max(y)]
         else:
-            x[i] = x[i-1]+10/n
+            if len(domain) == 2:
+                xrange = [domain[0], domain[1]]
+                yrange = [np.min(y), np.max(y)]
+            elif domain[0] == 0 and domain[1] == 0:
+                xrange = [np.min(x), np.max(x)]
+                yrange = [domain[2], domain[3]]
+            else:
+                xrange = [domain[0], domain[1]]
+                yrange = [domain[2], domain[3]]
+        xdif = xrange[1]-xrange[0]
+        ydif = yrange[1]-yrange[0]
 
-    # Define top and bottom colormaps 
-    c1 = cm.get_cmap('twilight_shifted', 128)  # c1
-    c2 = cm.get_cmap('magma', 128)             # c2
-    c3 = cm.get_cmap('viridis', 128)           # c3
-    newcolors = np.vstack((c1(np.linspace(0, 1, 128)),
-                        c2(np.linspace(0, 1, 128))))
-                        # c3(np.linspace(0, 1, 128))))
+        # Set dimensions
+        tiny = np.abs(ydif)*1e-3  # req. for bottom y-tick
+        plt.xlim([xrange[0], xrange[1]])
+        plt.ylim([yrange[0]-tiny, yrange[1]])
 
-    viridis_plasma = ListedColormap(newcolors, name='ViridisPlasma')
-    # viridis_plasma = 'magma'
+        # Define scaling
+        if true_scale == True:
+            ax.set_aspect('equal', adjustable='box')
+        elif aspect != None:
+            ax.set_aspect(aspect*xdif/ydif)
 
-    cmap = plt.get_cmap(viridis_plasma)
-    colors = cmap(np.linspace(0, 1, n)) # get n colors from cmap
+        # Ticks and labels
+        # plt.tight_layout()
+        ax.tick_params(direction="in")
+        plt.xlabel(self.xlabel)
+        plt.ylabel(self.ylabel)
+        plt.title(self.title)
 
-    fig, ax = plt.subplots()
-    ax.set_prop_cycle(color=colors)     # set colors to cycle prop
-
-    for i in range(n):
-        plt.plot(x[i], y[i])
-
-    xrange = [np.min(x), np.max(x)]
-    yrange = [np.min(y), np.max(y)]
-
-    
-    if true_scale == True:
-
-        # xdif = xrange[1]-xrange[0]
-        # ydif = yrange[1]-yrange[0]
-
-        ax.set_aspect('equal', adjustable='box')
-
-    else:
-        ax.set_aspect(aspect)
-
-    tiny = np.abs(np.max(y)-np.min(y))*1e-3
-    plt.xlim([np.min(x), np.max(x)])
-    plt.ylim([np.min(y)-tiny, np.max(y)])
-
-    ax.tick_params(direction="in")
-    plt.title('cos(θ)')
-    plt.xlabel('x axis')
-    plt.ylabel('y axis')
-    # plt.tight_layout()
-
-    # save as tiff -> word document -> save as png
-    fig.savefig('figure.tiff', dpi=1200)
-
-    plt.show()
+        # Save figure
+        # save as tiff -> word document -> save as png
+        if self.save_fig == True:
+            fig.savefig(self.saveas, dpi=self.dpi)
 
 
-if __name__ == "__main__":
+    def plot(self, x, y):
 
-    X = np.linspace(0, 2*np.pi, 100)
-    Y = np.cos(X)*2
-    cleanplot(X, Y, n=40, true_scale=True, aspect=1/3)
+        # Plots size
+        n = x.shape[0]
+
+        self.setup(x, y)
+        for i in range(n):
+            plt.plot(x[i], y[i])
+
+
+    def scatter(self, x, y):
+
+        # Plots size
+        n = x.shape[0]
+
+        self.setup(x, y)
+        for i in range(n):
+            plt.scatter(x[i], y[i], s=3)
+
+
+    def show(self,):
+        plt.show()
+
+
+    def forceAspect(ax, aspect=1):
+        im = ax.get_images()
+        extent = im[0].get_extent()
+        ax.set_aspect(abs((extent[1]-extent[0])/(extent[3]-extent[2]))/aspect)
+
+
+# Todo 
+# 2d plots, 2d scatter, 2d contour
+# 3d plots, 3d scatter, 3d contour
+# imshow-extend
+# animations
+# heatmaps

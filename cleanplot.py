@@ -10,6 +10,10 @@ class interface():
 
     def __init__(self):
 
+
+        # Initialise figure
+        self.fig, self.ax = plt.subplots()
+
         # Public
         self.dpi = 1200
         self.save_fig = True
@@ -19,14 +23,26 @@ class interface():
         self.ylabel = 'y axis'
         self.font = 'sans-serif'
         # self.cmaps = ['r', 'b']
-        self.cmaps = ['twilight_shifted_r', 'magma']
+        # self.cmaps = ['twilight_shifted_r', 'viridis']
+        self.cmaps = ['twilight_shifted_r', 'plasma']
         # self.cmaps = ['twilight_shifted_r', 'magma', 'inferno_r', 'twilight']
+        self.ms = 4
+        self.c_spec = 1
+        # self.linestyle = [':', '-.', '--', '-']
+        # self.marker = ['^', 'o', 'x', 'v']
+        self.linestyle = None
+        self.marker = None
 
 
     def setup(self, x, y, true_scale=True, aspect=None, domain=None):
         
         # Plots size
         n = x.shape[0]
+
+        if self.linestyle == None:
+            self.linestyle = [None]*n
+        if self.marker == None:
+            self.marker = [None]*n
 
         # Parameters
         # plt.rc('lines', linewidth=2)
@@ -40,7 +56,6 @@ class interface():
                 mapstack.append(cm.get_cmap(self.cmaps[i], 128))
             except:
                 continue
-
         try:
             newcolors = mapstack[0](np.linspace(0, 1, 128))
             for i in range(1, len(self.cmaps)):
@@ -51,11 +66,8 @@ class interface():
         # Create custom map instance
         customap = ListedColormap(newcolors, name='customap')
         cmap = plt.get_cmap(customap)
-        colors = cmap(np.linspace(0, 1, n)) # get n colors from cmap
-
-        # Initialise figure
-        fig, ax = plt.subplots()
-        ax.set_prop_cycle(color=colors)     # set colors to cycle prop
+        colors = cmap(np.linspace(0, 1*self.c_spec, n)) # get n colors from cmap
+        self.ax.set_prop_cycle(color=colors)     # set colors to cycle prop
 
         # # Plot graphs
         # for i in range(n):
@@ -85,21 +97,16 @@ class interface():
 
         # Define scaling
         if true_scale == True:
-            ax.set_aspect('equal', adjustable='box')
+            self.ax.set_aspect('equal', adjustable='box')
         elif aspect != None:
-            ax.set_aspect(aspect*xdif/ydif)
+            self.ax.set_aspect(aspect*xdif/ydif)
 
         # Ticks and labels
         # plt.tight_layout()
-        ax.tick_params(direction="in")
+        self.ax.tick_params(direction="in")
         plt.xlabel(self.xlabel)
         plt.ylabel(self.ylabel)
         plt.title(self.title)
-
-        # Save figure
-        # save as tiff -> word document -> save as png
-        if self.save_fig == True:
-            fig.savefig(self.saveas, dpi=self.dpi)
 
 
     def plot(self, x, y):
@@ -109,7 +116,12 @@ class interface():
 
         self.setup(x, y)
         for i in range(n):
-            plt.plot(x[i], y[i])
+            plt.plot(x[i], y[i], linestyle=self.linestyle[i], marker=self.marker[i], ms=self.ms)
+
+        # Save figure
+        # save as tiff -> word document -> save as png
+        if self.save_fig == True:
+            self.fig.savefig(self.saveas, dpi=self.dpi)
 
 
     def scatter(self, x, y):
@@ -121,6 +133,11 @@ class interface():
         for i in range(n):
             plt.scatter(x[i], y[i], s=3)
 
+        # Save figure
+        # save as tiff -> word document -> save as png
+        if self.save_fig == True:
+            self.fig.savefig(self.saveas, dpi=self.dpi)
+
 
     def show(self,):
         plt.show()
@@ -131,9 +148,9 @@ class interface():
         extent = im[0].get_extent()
         ax.set_aspect(abs((extent[1]-extent[0])/(extent[3]-extent[2]))/aspect)
 
-
 # Todo 
 # 2d plots, 2d scatter, 2d contour
+# 2d plot with points
 # 3d plots, 3d scatter, 3d contour
 # imshow-extend
 # animations

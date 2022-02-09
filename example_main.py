@@ -4,7 +4,7 @@ import numpy as np
 from cleanplot import interface
 cplt = interface()
 
-if __name__ == "__main__":
+def main()
 
     X = np.linspace(0, 2*np.pi, 100)
     # Y = X**2/np.cos(X)+1
@@ -22,3 +22,8 @@ if __name__ == "__main__":
 
     cplt.plot(x, y)
     cplt.show()
+
+    
+if __name__ == "__main__":
+    main()
+    

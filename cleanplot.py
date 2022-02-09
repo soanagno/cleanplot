@@ -1,7 +1,7 @@
-from cycler import cycler
 import numpy as np
 import matplotlib as mpl
 from matplotlib import cm
+from cycler import cycler
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 

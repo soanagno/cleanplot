@@ -43,6 +43,9 @@ class interface():
 
     def setup(self, x, y, true_scale=True, aspect=None, domain=None, c=None):
         
+        # To numpy array
+        x, y = np.array(x), np.array(y)
+        
         # Set specific colors
         if c != None:
             self.cmaps = c

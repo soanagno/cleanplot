@@ -2,9 +2,11 @@
 # sys.path.append('.')
 import numpy as np
 from cleanplot import interface
+
+
 cplt = interface()
 
-if __name__ == "__main__":
+def main():
 
     # # Create data
     # X = np.random.uniform(low=0.01, high=0.02, size=(1000,))
@@ -28,3 +30,8 @@ if __name__ == "__main__":
 
     cplt.plot(x, y, true_scale=True)
     cplt.show()
+
+
+if __name__ == "__main__":
+    main()
+    

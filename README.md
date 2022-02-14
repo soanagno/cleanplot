@@ -3,4 +3,4 @@ A clean Python template for plotting clean figures with scientific publishing st
 
 Example fig:
 
-![](figure.png)
+![](example.png)

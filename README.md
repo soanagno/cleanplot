@@ -1,5 +1,5 @@
 # cleanplot
-A clean Python template for plotting clean figures with scientific publishing strandards, using matplotlib/seaborn.
+A clean Python template for plotting custom figures with scientific publishing strandards, using matplotlib/seaborn.
 
 Example fig:
 

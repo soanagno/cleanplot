@@ -1,0 +1,23 @@
+{
+
+  "type": "cplot_parameters",
+  "description": "Clean plot parameters",
+
+	"general": {
+
+		"dpi": 1200,
+		"save_fig": true,
+		"saveas": "figure.tiff",
+		"title": "",
+		"xlabel": "x",
+		"ylabel": "cos(theta)",
+		"font": "sans-serif",
+		"legends": null,
+		"cmaps": ["twilight_shifted_r", "plasma"],
+		"ms": 4,
+		"c_spec": 1,
+		"linestyle": null,
+		"marker": null
+	}
+
+}
